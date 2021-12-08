@@ -6,9 +6,16 @@ c++ study
 
 ## Sprints
 
+### API
+
+Our project is to implement following yaml
+
+[YAML](/docs/api.yaml)
+
 ### Day 1
  - RestServer class
    - non copyable, movable, may create multiple server
+
 ```cpp
 class RestServer
 {
@@ -19,6 +26,7 @@ public:
     ~RestServer();
 
     // can handle request after this api
+    // doesn't block thread
     void Run();
 
     // add handler when given url is called with GET method
@@ -34,17 +42,14 @@ typename SynchronousHandler;
 
 class MyRestAppInitialiser
 {
-    // create a rest server with api below
+    // create a rest server with api
     RestServer CreateServer();
 };
 ```
 
-```yml
-
-```
-
 ### Day2
 TBD: apply TDD
+
 TBD: make your own complex handler
 
 ### Day3

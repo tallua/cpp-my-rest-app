@@ -1,0 +1,62 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "My Rest App"
+  contact:
+    email: "talluay@gmail.com"
+host: "0.0.0.0:1234"
+tags:
+- name: "day1"
+  description: "API to be implemented on day1"
+schemes:
+- "http"
+paths:
+  /day1/echo:
+    post:
+      tags:
+      - "day1"
+      summary: "echo data"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "data to be echo"
+        required: true
+        schema:
+          $ref: "#/definitions/Echo"
+      responses:
+        200:
+          description: "response same object as parameter"
+          schema:
+            $ref: "#/definitions/Echo"
+        405:
+          description: "Invalid input"
+  /day1/hello:
+    get:
+      tags:
+      - "day1"
+      summary: "Hello World"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Hello World"
+          schema:
+            $ref: "#/definitions/Hello"
+definitions:
+  Echo:
+    type: "object"
+    properties:
+      data:
+        type: "string"
+  Hello:
+    type: "string"
+    enum: ["Hello, Rest"]
+externalDocs:
+  description: "Github repository"
+  url: "https://github.com/tallua-cpp-study/cpp-my-rest-app"
