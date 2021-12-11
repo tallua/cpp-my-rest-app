@@ -17,6 +17,7 @@ include(GoogleTest)
 ## Config Test
 set(SOURCES
   ./test_main.cpp
+  ./test_core.cpp
 )
 
 
@@ -25,6 +26,5 @@ enable_testing()
 
 add_executable(cpp-my-rest-tests ${SOURCES})
 target_link_libraries(cpp-my-rest-tests gtest_main cpp-my-rest-libs)
-target_include_directories(cpp-my-rest-libs)
 
 gtest_discover_tests(cpp-my-rest-tests)
