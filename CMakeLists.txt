@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(cpp-my-rest-app)
+project(cpp-my-rest-app-root NONE)
 
-find_package(cpprestsdk REQUIRED)
-find_package(OpenSSL REQUIRED)
+add_subdirectory(src)
 
-add_executable(cpp-my-rest-app src/main.cpp)
-target_link_libraries(cpp-my-rest-app cpprestsdk::cpprest OpenSSL::Crypto)
+enable_testing()
+add_subdirectory(tests)
