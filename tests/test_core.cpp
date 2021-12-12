@@ -10,7 +10,7 @@ using namespace web::http;
 using namespace web::http::client;
 using namespace rest::core;
 
-Response request_get(const std::string& host, const std::string& url)
+http_response request_get(const std::string& host, const std::string& url)
 {
     http_client client(host);
 
@@ -22,7 +22,7 @@ Response request_get(const std::string& host, const std::string& url)
     return req.get();
 }
 
-Response request_post(const std::string& host, const std::string& url)
+http_response request_post(const std::string& host, const std::string& url)
 {
     http_client client(host);
 
@@ -36,32 +36,30 @@ Response request_post(const std::string& host, const std::string& url)
 
 TEST(RestServer, test_get_p)
 {
-    const Response expect_response("response of test_get");
+    const std::string expect_response("response of test_get");
 
     RestServer server(U("http://0.0.0.0:1234"));
     server.OnGet("/test_url", [&](auto req) { return expect_response; });
     server.Run();
 
-    // sleep
+    const auto actual_response = request_get("http://0.0.0.0:1234", "/test_url");
 
-    const Response actual_response = request_get("http://0.0.0.0:1234", "/test_url");
-
-    EXPECT_EQ(expect_response, actual_response);
+    EXPECT_EQ(status_codes::OK, actual_response.status_code());
+    EXPECT_EQ(expect_response, actual_response.extract_string().get());
 }
 
 TEST(RestServer, test_post_p)
 {
-    const Response expect_response("response of test_post");
+    const std::string expect_response("response of test_post");
 
     RestServer server(U("http://0.0.0.0:1234"));
     server.OnPost("/test_url", [&](auto req) { return expect_response; });
     server.Run();
 
-    // sleep
+    const auto actual_response = request_post("http://0.0.0.0:1234", "/test_url");
 
-    const Response actual_response = request_post("http://0.0.0.0:1234", "/test_url");
-
-    EXPECT_EQ(expect_response, actual_response);
+    EXPECT_EQ(status_codes::OK, actual_response.status_code());
+    EXPECT_EQ(expect_response, actual_response.extract_string().get());
 }
 
 TEST(RestServer, test_no_url)
@@ -69,13 +67,11 @@ TEST(RestServer, test_no_url)
     RestServer server(U("http://0.0.0.0:1234"));
     server.Run();
 
-    // sleep
+    const auto get_response = request_get("http://0.0.0.0:1234", "/no_url");
+    const auto post_response = request_post("http://0.0.0.0:1234", "/no_url");
 
-    const Response get_response = request_get("http://0.0.0.0:1234", "/no_url");
-    const Response post_response = request_post("http://0.0.0.0:1234", "/no_url");
-
-    EXPECT_EQ(404, get_response.code());
-    EXPECT_EQ(404, post_response.code());
+    EXPECT_EQ(status_codes::NotFound, get_response.status_code());
+    EXPECT_EQ(status_codes::NotFound, post_response.status_code());
 }
 
 }
