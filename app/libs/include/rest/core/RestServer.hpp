@@ -28,11 +28,6 @@ private:
     web::http::http_response rest_response;
 };
 
-inline bool operator == (const Response& lhs, const Response& rhs)
-{
-    return false;
-}
-
 using SynchronizedHandler = std::function<Response(const Request& req)>;
 
 class RestServer
