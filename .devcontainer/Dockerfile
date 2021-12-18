@@ -4,6 +4,4 @@ FROM mcr.microsoft.com/vscode/devcontainers/cpp:0-${VARIANT}
 RUN apt-get update
 RUN apt-get -y install --no-install-recommends libcpprest-dev libssl-dev
 
-RUN git clone https://github.com/google/googletest.git
-WORKDIR /googletest/build
 RUN cmake ../ && make && make install
