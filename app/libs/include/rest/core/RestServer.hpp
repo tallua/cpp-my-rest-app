@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 #include <functional>
 
 #include <cpprest/http_msg.h>
@@ -47,8 +48,9 @@ public:
     void OnGet(const std::string& url, SynchronizedHandler handler);
     void OnPost(const std::string& url, SynchronizedHandler handler);
 private:
-    SynchronizedHandler get_handler;
-    SynchronizedHandler set_handler;
+
+    std::unordered_map<std::string, SynchronizedHandler> get_handlers;
+    std::unordered_map<std::string, SynchronizedHandler> set_handlers;
 
     web::http::experimental::listener::http_listener listener;
 };
