@@ -20,11 +20,12 @@ set(SOURCES
   ./test_core.cpp
 )
 
-
 ## Test Binary
 enable_testing()
 
 add_executable(cpp-my-rest-tests ${SOURCES})
-target_link_libraries(cpp-my-rest-tests gtest_main cpp-my-rest-libs)
+target_link_libraries(cpp-my-rest-tests
+  gtest_main
+  cpp-my-rest-libs)
 
 gtest_discover_tests(cpp-my-rest-tests)
