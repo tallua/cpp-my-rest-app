@@ -43,7 +43,7 @@ typename SynchronousHandler;
 class MyRestAppInitialiser
 {
     // create a rest server with api
-    RestServer CreateServer();
+    std::shared_ptr<RestServer> CreateServer();
 };
 ```
 
