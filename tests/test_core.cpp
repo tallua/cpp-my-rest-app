@@ -90,7 +90,7 @@ TEST(RestServer, url_distribute)
 
     const auto actual_response2 = request_get("http://0.0.0.0:1234", "/url2");
     EXPECT_EQ(status_codes::OK, actual_response2.status_code());
-    EXPECT_EQ(actual_response2, actual_response2.extract_string().get());
+    EXPECT_EQ(expect_response2, actual_response2.extract_string().get());
 }
 
 TEST(RestServer, throws_exception)
@@ -109,7 +109,8 @@ TEST(RestServer, exception_tolerant)
     const std::string expect_response("good response after exception");
 
     RestServer server(U("http://0.0.0.0:1234"));
-    server.OnGet("/test_url", [&, call_count = int(0)](auto req) mutable {
+    int call_count = 0;
+    server.OnGet("/test_url", [&, &call_count](auto req) mutable {
         ++call_count;
         if(call_count == 1)
             throw std::exception();
@@ -119,10 +120,12 @@ TEST(RestServer, exception_tolerant)
 
     const auto actual_response1 = request_get("http://0.0.0.0:1234", "/test_url");
     EXPECT_EQ(status_codes::InternalError, actual_response1.status_code());
+    EXPECT_EQ(1, call_count);
 
     const auto actual_response2 = request_get("http://0.0.0.0:1234", "/test_url");
     EXPECT_EQ(status_codes::OK, actual_response2.status_code());
     EXPECT_EQ(expect_response, actual_response2.extract_string().get());
+    EXPECT_EQ(2, call_count);
 }
 
 }
