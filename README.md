@@ -40,19 +40,10 @@ public:
 // closure of Response operator() (const Request&) const
 typename SynchronousHandler;
 
-struct Response
-{
-    Response(const std::string& message);
-
-    web::http::status_code code() const;
-
-    const web::http::http_response& response() const;
-};
-
 class MyRestAppInitialiser
 {
     // create a rest server with api
-    RestServer CreateServer();
+    std::shared_ptr<RestServer> CreateServer();
 };
 ```
 
