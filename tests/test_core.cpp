@@ -109,8 +109,8 @@ TEST(RestServer, exception_tolerant)
     const std::string expect_response("good response after exception");
 
     RestServer server(U("http://0.0.0.0:1234"));
-    int call_count = 0;
-    server.OnGet("/test_url", [&, &call_count](auto req) mutable {
+    static int call_count = 0;
+    server.OnGet("/test_url", [&](auto req) {
         ++call_count;
         if(call_count == 1)
             throw std::exception();
