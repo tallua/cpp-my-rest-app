@@ -69,7 +69,7 @@ RestServer::~RestServer()
 
 void RestServer::Run()
 {
-    listener.open();
+    listener.open().wait();
 }
 
 void RestServer::OnGet(const std::string& url, SynchronizedHandler handler)
