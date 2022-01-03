@@ -13,8 +13,12 @@ namespace core
 {
 
 struct Request {
-    Request() = default;
     Request(web::http::http_request& req);
+
+    const web::http::uri& uri() const;
+
+private:
+    web::http::http_request rest_request;
 };
 
 struct Response {

@@ -128,4 +128,54 @@ TEST(RestServer, exception_tolerant)
     EXPECT_EQ(2, call_count);
 }
 
+TEST(RestServer, test_null_function)
+{
+    RestServer server(U("http://0.0.0.0:1007"));
+    server.OnGet("/test_url", nullptr);
+    server.OnPost("/test_url", nullptr);
+    server.Run();
+
+    const auto actual_response1 = request_get("http://0.0.0.0:1007", "/test_url");
+    EXPECT_EQ(status_codes::NotFound, actual_response1.status_code());
+    const auto actual_response2 = request_post("http://0.0.0.0:1007", "/test_url");
+    EXPECT_EQ(status_codes::NotFound, actual_response2.status_code());
+}
+
+TEST(RestServer, reset_function)
+{
+    const std::string original_response = "original response";
+    const std::string changed_response = "changed response";
+
+    RestServer server(U("http://0.0.0.0:1008"));
+    server.OnGet("/test_url", [&](auto){ return original_response; });
+    server.OnPost("/test_url", [&](auto){ return original_response; });
+
+    server.OnGet("/test_url", [&](auto){ return changed_response; });
+    server.OnPost("/test_url", [&](auto){ return changed_response; });
+    server.Run();
+
+
+    const auto actual_response1 = request_get("http://0.0.0.0:1008", "/test_url");
+    EXPECT_EQ(status_codes::OK, actual_response1.status_code());
+    EXPECT_EQ(changed_response, actual_response1.extract_string().get());
+    const auto actual_response2 = request_post("http://0.0.0.0:1008", "/test_url");
+    EXPECT_EQ(status_codes::OK, actual_response2.status_code());
+    EXPECT_EQ(changed_response, actual_response2.extract_string().get());
+}
+
+TEST(RestServer, wild_card)
+{
+    RestServer server(U("http://0.0.0.0:1009"));
+    server.OnGet("/test_url/*", [&](auto&& req){ return req.uri().to_string(); });
+    server.OnPost("/test_url/*", [&](auto&& req){ return req.uri().to_string(); });
+    server.Run();
+
+    const auto actual_response1 = request_get("http://0.0.0.0:1009", "/test_url/hello");
+    EXPECT_EQ(status_codes::OK, actual_response1.status_code());
+    EXPECT_EQ("/test_url/hello", actual_response1.extract_string().get());
+    const auto actual_response2 = request_post("http://0.0.0.0:1009", "/test_url/world");
+    EXPECT_EQ(status_codes::OK, actual_response2.status_code());
+    EXPECT_EQ("/test_url/world", actual_response2.extract_string().get());
+}
+
 }
