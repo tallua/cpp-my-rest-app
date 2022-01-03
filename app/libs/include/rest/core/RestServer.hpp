@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <functional>
 
 #include <cpprest/http_msg.h>
@@ -35,6 +36,43 @@ private:
 
 using SynchronizedHandler = std::function<Response(const Request& req)>;
 
+class Handlers
+{
+public:
+    struct const_iterator {
+        inline bool operator == (const const_iterator& other) const
+        {
+            return handler == other.handler;
+        }
+
+        inline bool operator != (const const_iterator& other) const
+        {
+            return !(*this == other);
+        }
+
+        const SynchronizedHandler& operator* () const { return *handler; }
+
+    private:
+        friend class Handlers;
+        const_iterator(const SynchronizedHandler* handler) : handler(handler) {}
+        const SynchronizedHandler* handler;
+    };
+
+    const_iterator find(const std::string& url) const;
+    const_iterator end() const;
+
+    void insert(const std::string& url, SynchronizedHandler handler);
+
+private:
+    struct WildcardHandler {
+        std::string url;
+        SynchronizedHandler handler;
+    };
+
+    std::vector<WildcardHandler> wildcard_handlers;
+    std::unordered_map<std::string, SynchronizedHandler> fixed_handlers;
+};
+
 class RestServer
 {
 public:
@@ -53,8 +91,8 @@ public:
     void OnPost(const std::string& url, SynchronizedHandler handler);
 private:
 
-    std::unordered_map<std::string, SynchronizedHandler> get_handlers;
-    std::unordered_map<std::string, SynchronizedHandler> set_handlers;
+    Handlers get_handlers;
+    Handlers set_handlers;
 
     web::http::experimental::listener::http_listener listener;
 };
