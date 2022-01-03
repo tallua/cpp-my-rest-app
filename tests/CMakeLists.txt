@@ -31,5 +31,8 @@ target_link_libraries(cpp-my-rest-tests
 target_include_directories(cpp-my-rest-tests
   PRIVATE ../app/libs/include
 )
+target_compile_options(cpp-my-rest-tests
+  PRIVATE -pedantic -Wall -Werror -Wextra
+)
 
 gtest_discover_tests(cpp-my-rest-tests)
