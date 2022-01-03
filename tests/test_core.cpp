@@ -39,7 +39,7 @@ TEST(RestServer, test_get_p)
     const std::string expect_response("response of test_get");
 
     RestServer server(U("http://0.0.0.0:1001"));
-    server.OnGet("/test_url", [&](auto req) { return expect_response; });
+    server.OnGet("/test_url", [&](auto) { return expect_response; });
     server.Run();
 
     const auto actual_response = request_get("http://0.0.0.0:1001", "/test_url");
@@ -53,7 +53,7 @@ TEST(RestServer, test_post_p)
     const std::string expect_response("response of test_post");
 
     RestServer server(U("http://0.0.0.0:1002"));
-    server.OnPost("/test_url", [&](auto req) { return expect_response; });
+    server.OnPost("/test_url", [&](auto) { return expect_response; });
     server.Run();
 
     const auto actual_response = request_post("http://0.0.0.0:1002", "/test_url");
@@ -80,8 +80,8 @@ TEST(RestServer, url_distribute)
     const std::string expect_response2("response 2");
 
     RestServer server(U("http://0.0.0.0:1004"));
-    server.OnGet("/url1", [&](auto req) { return expect_response1; });
-    server.OnGet("/url2", [&](auto req) { return expect_response2; });
+    server.OnGet("/url1", [&](auto) { return expect_response1; });
+    server.OnGet("/url2", [&](auto) { return expect_response2; });
     server.Run();
 
     const auto actual_response1 = request_get("http://0.0.0.0:1004", "/url1");
@@ -96,7 +96,7 @@ TEST(RestServer, url_distribute)
 TEST(RestServer, throws_exception)
 {
     RestServer server(U("http://0.0.0.0:1005"));
-    server.OnGet("/test_url", [&](auto req) -> rest::core::Response { throw std::exception(); });
+    server.OnGet("/test_url", [&](auto) -> rest::core::Response { throw std::exception(); });
     server.Run();
 
     const auto actual_response = request_get("http://0.0.0.0:1005", "/test_url");
@@ -110,7 +110,7 @@ TEST(RestServer, exception_tolerant)
 
     RestServer server(U("http://0.0.0.0:1006"));
     static int call_count = 0;
-    server.OnGet("/test_url", [&](auto req) {
+    server.OnGet("/test_url", [&](auto) {
         ++call_count;
         if(call_count == 1)
             throw std::exception();
