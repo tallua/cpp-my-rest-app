@@ -10,18 +10,16 @@ namespace rest
 namespace core
 {
 
-struct Request {};
+struct Request {
+    const web::http::uri& uri() const;
+};
+
 struct Response {
     Response(web::http::http_response resp);
     Response(const std::string& message);
 
     web::http::status_code code() const;
 };
-
-inline bool operator == (const Response& lhs, const Response& rhs)
-{
-    return false;
-}
 
 using SynchronizedHandler = std::function<Response(const Request& req)>;
 

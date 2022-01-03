@@ -36,6 +36,15 @@ public:
     void OnPost(const std::string& url, SynchronousHandler handler);
 };
 
+struct Request {
+    const web::http::uri& uri() const;
+};
+
+struct Response {
+    Response(const std::string& message);
+
+    web::http::status_code code() const;
+};
 
 // closure of Response operator() (const Request&) const
 typename SynchronousHandler;
